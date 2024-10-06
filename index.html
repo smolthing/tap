@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tap</title>
+    <meta name="description" content="Tap to find out what happens." />
     <style>
       body,
       html {
@@ -31,11 +32,11 @@
         height: auto;
       }
 
-      #video2 {
+      #videoEnd {
         display: none;
       }
 
-      .text {
+      #text {
         font-size: 25px;
         color: #333;
         margin-top: 10px;
@@ -44,12 +45,12 @@
         opacity: 0;
       }
 
-      .text.visible {
+      #text.visible {
         opacity: 1;
         transition: opacity 1s;
       }
 
-      .text:hover {
+      #text:hover {
         color: coral;
       }
 
@@ -60,58 +61,68 @@
   </head>
   <body>
     <div class="video-container">
-      <video id="video1" class="video" autoplay muted loop playsinline>
+      <video id="videoStart" class="video" autoplay muted loop playsinline>
         <source src="tap1.mp4" type="video/mp4" />
       </video>
 
-      <video id="video2" class="video" muted playsinline>
+      <video id="videoEnd" class="video" muted playsinline>
         <source src="tap2.mp4" type="video/mp4" />
       </video>
 
-      <div id="tapText" class="text">Tap</div>
+      <div id="text">Tap</div>
     </div>
 
     <script>
-      const video1 = document.getElementById("video1");
-      const video2 = document.getElementById("video2");
-      const tapText = document.getElementById("tapText");
-      const resetText = document.getElementById("resetText");
+      const VISIBLE = "visible";
+      const BLOCK = "block";
+      const NONE = "none";
+      const TAP_TEXT = "Tap";
+      const RESET_TEXT = "Reset";
+      const TEXT_ID = "text";
+      const VIDEO_ID_START = "videoStart";
+      const VIDEO_ID_END = "videoEnd";
+      const USER_CLICK = "click";
+      const CONTENT_LOADED_EVENT = "DOMContentLoaded";
+      const WAIT_TIME_IN_MS = 1000;
+
+      const video1 = document.getElementById(VIDEO_ID_START);
+      const video2 = document.getElementById(VIDEO_ID_END);
+      const text = document.getElementById(TEXT_ID);
       let hasTapped = false;
 
       const switchtoVideo1 = () => {
-        video1.style.display = "block";
-        video2.style.display = "none";
-        video2.load();
+        video1.style.display = BLOCK;
+        video2.style.display = NONE;
 
-        tapText.textContent = "Tap";
-        tapText.classList.remove("visible");
+        text.textContent = TAP_TEXT;
+        text.classList.remove(VISIBLE);
       };
 
       const switchtoVideo2 = () => {
-        video2.style.display = "block";
-        video1.style.display = "none";
+        video2.style.display = BLOCK;
+        video1.style.display = NONE;
         video2.play();
-        tapText.textContent = "Reset";
+        text.textContent = RESET_TEXT;
       };
 
       const animateText = () => {
         setTimeout(() => {
-          tapText.classList.add("visible");
-        }, 1000);
+          text.classList.add(VISIBLE);
+        }, WAIT_TIME_IN_MS);
       };
 
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener(CONTENT_LOADED_EVENT, () => {
         animateText();
 
-        document.body.addEventListener("click", () => {
+        document.body.addEventListener(USER_CLICK, () => {
           if (hasTapped) {
             switchtoVideo1();
           } else {
             switchtoVideo2();
           }
 
-          hasTapped = !hasTapped;
           animateText();
+          hasTapped = !hasTapped;
         });
       });
     </script>
